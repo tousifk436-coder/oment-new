@@ -172,7 +172,7 @@ async function boot(appDir, label) {
     check(aw.ImmTemplates.get('Unknown Service X').length > 0, 'unknown service falls back to generic template');
 
     // client create + dedupe
-    const c1 = await aw.DataAPI.createClient({ name: 'Test Client', email: 'test.client@example.com', countryOfResidence: 'India' });
+    const c1 = await aw.DataAPI.createClient({ name: 'Test Client', email: 'test.client@example.com', countryOfNationality: 'India' });
     const c2 = await aw.DataAPI.createClient({ name: 'Test Client 2', email: 'TEST.CLIENT@example.com' });
     check(c1.id === c2.id, 'duplicate client (same email) is not created twice');
 

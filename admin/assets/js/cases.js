@@ -129,7 +129,7 @@ function _cxDashboard(el, D) {
     if (CASES_UI.filters.risk === 'today' && !D.milestones.some(function (m) { return m.projectId === p.id && m.status !== 'DONE' && SisOps.daysUntil(m.dueDate) === 0; })) return false;
     if (q) {
       var cl = D.clients.filter(function (c) { return c.id === p.clientId; })[0] || {};
-      var hay = [p.name, p.clientName, p.service, cl.uci, cl.applicationNumber, cl.internalRef, cl.email]
+      var hay = [p.name, p.clientName, p.service, cl.uci, cl.applicationNumber, cl.rpdFileNumber, cl.email]
         .concat(D.milestones.filter(function (m) { return m.projectId === p.id; }).map(function (m) { return m.title; }))
         .join(' ').toLowerCase();
       if (hay.indexOf(q) < 0) return false;
@@ -263,7 +263,7 @@ function _cxDetail(el, D) {
     (p.status !== 'COMPLETED' && st.remaining === 0 && st.required > 0 ? '<button class="btn btn-primary btn-sm" onclick="cxCloseCase(' + _cxJsId(p.id) + ')">\uD83C\uDFC1 Close Project</button>' : '') +
     '</div></div>' +
     '<div style="display:flex;gap:18px;flex-wrap:wrap;font-size:12px;color:var(--t2);margin-top:8px">' +
-    '<span><strong style="color:var(--t1)">Client:</strong> ' + esc(p.clientName || '\u2014') + (client && client.internalRef ? ' (' + esc(client.internalRef) + ')' : '') + '</span>' +
+    '<span><strong style="color:var(--t1)">Client:</strong> ' + esc(p.clientName || '\u2014') + (client && client.applicationNumber ? ' (' + esc(client.applicationNumber) + ')' : '') + '</span>' +
     '<span><strong style="color:var(--t1)">Service:</strong> ' + esc(p.service || '\u2014') + '</span>' +
     '<span><strong style="color:var(--t1)">Owner:</strong> ' + esc(owners || '\u2014') + '</span>' +
     '<span><strong style="color:var(--t1)">Priority:</strong> ' + esc(p.priority || '\u2014') + '</span>' +
@@ -505,14 +505,17 @@ function _cxOverviewTab(p, client, st) {
   return '<div style="display:flex;gap:12px;flex-wrap:wrap">' +
     '<div class="card card-pad" style="flex:1;min-width:260px"><div class="section-title" style="margin-bottom:6px">Client</div><table>' +
     row('Name', client ? client.name : p.clientName) + row('Email', client && client.email) + row('Phone', client && client.phone) +
-    row('Country of Residence', client && client.countryOfResidence) + row('Current Country', client && client.currentCountry) +
+    row('Country of Nationality', client && client.countryOfNationality) + row('Current Address', client && client.currentAddress) +
     row('UCI', (client && client.uci) || p.uci) + row('Application #', (client && client.applicationNumber) || p.applicationNumber) +
-    row('Internal Ref', client && client.internalRef) + '</table></div>' +
+    row('RPD File #', client && client.rpdFileNumber) +
+    row('Drive Link', client && client.driveLink) + '</table></div>' +
     '<div class="card card-pad" style="flex:1;min-width:260px"><div class="section-title" style="margin-bottom:6px">Project</div><table>' +
-    row('Service', p.service) + row('Service Group', p.serviceGroup) + row('Description', p.description) +
+    row('Service', p.service) + row('Service Group', p.serviceGroup) +
     row('Start', SisOps.fmt(p.startDate)) + row('Final Deadline', SisOps.fmt(p.deadline)) +
     row('Milestones', st.done + '/' + st.required + ' complete') +
-    row('Closed', p.closedAt ? SisOps.fmt(p.closedAt) : '') + '</table></div></div>';
+    row('Closed', p.closedAt ? SisOps.fmt(p.closedAt) : '') + '</table>' +
+    (p.description ? '<div style="margin-top:10px"><div style="font-size:12px;color:var(--t2);margin-bottom:4px">Description</div><div style="font-size:12px;white-space:pre-wrap;word-break:break-word;max-height:260px;overflow-y:auto;line-height:1.5">' + esc(p.description) + '</div></div>' : '') +
+    '</div></div>';
 }
 
 function _cxNotesTab(p) {
@@ -694,13 +697,14 @@ function _cxWizRender() {
       if (W.clientMode === 'existing') {
         body += '<div class="form-group"><label class="form-label">Select client</label><select id="wiz-client" class="form-select">' +
           (D.clients.length ? D.clients.map(function (c) {
-            return '<option value="' + c.id + '"' + (W.clientId === c.id ? ' selected' : '') + '>' + esc(c.name) + (c.internalRef ? ' \u00B7 ' + esc(c.internalRef) : '') + '</option>';
+            return '<option value="' + c.id + '"' + (W.clientId === c.id ? ' selected' : '') + '>' + esc(c.name) + (c.applicationNumber ? ' \u00B7 ' + esc(c.applicationNumber) : '') + '</option>';
           }).join('') : '<option value="">\u2014 no clients yet, create new \u2014</option>') + '</select></div>';
       } else {
         function fld(id, label, ph) { return '<div class="form-group"><label class="form-label">' + label + '</label><input id="' + id + '" class="form-input" placeholder="' + (ph || '') + '" value="' + esc(W.newClient[id.replace('wiz-nc-', '')] || '') + '"></div>'; }
         body += fld('wiz-nc-name', 'Full Name *') + fld('wiz-nc-email', 'Email') + fld('wiz-nc-phone', 'Phone') +
-          '<div style="display:flex;gap:8px"><div style="flex:1">' + fld('wiz-nc-countryOfResidence', 'Country of Residence') + '</div><div style="flex:1">' + fld('wiz-nc-currentCountry', 'Current Country') + '</div></div>' +
-          '<div style="display:flex;gap:8px"><div style="flex:1">' + fld('wiz-nc-uci', 'UCI') + '</div><div style="flex:1">' + fld('wiz-nc-internalRef', 'Internal Reference') + '</div></div>';
+          '<div style="display:flex;gap:8px"><div style="flex:1">' + fld('wiz-nc-countryOfNationality', 'Country of Nationality') + '</div><div style="flex:1">' + fld('wiz-nc-currentAddress', 'Current Address') + '</div></div>' +
+          '<div style="display:flex;gap:8px"><div style="flex:1">' + fld('wiz-nc-uci', 'UCI') + '</div><div style="flex:1">' + fld('wiz-nc-driveLink', 'Drive Link', 'https://drive.google.com/...') + '</div></div>' +
+          '<div style="display:flex;gap:8px"><div style="flex:1">' + fld('wiz-nc-applicationNumber', 'Application Number') + '</div><div style="flex:1">' + fld('wiz-nc-rpdFileNumber', 'RPD File Number') + '</div></div>';
       }
       foot = '<button class="btn" onclick="cxWizCancel()">Cancel</button><button class="btn btn-primary" onclick="cxWizNext(' + JSON.stringify(1) + ')">Next \u2192</button>';
     }
@@ -709,9 +713,9 @@ function _cxWizRender() {
     else if (W.step === 2) {
       title = 'Which immigration service?';
       body = (SisOps.SERVICE_GROUPS || []).map(function (g) {
-        return '<div style="font-size:12px;font-weight:700;margin:8px 0 4px">' + esc(g.group) + '</div>' +
-          '<div style="display:flex;gap:6px;flex-wrap:wrap">' + g.services.map(function (sv) {
-            return '<button class="btn btn-sm' + (W.service === sv ? ' btn-primary' : '') + '" onclick="CASE_WIZ.service=' + JSON.stringify(sv).replace(/"/g, '&quot;') + ';CASE_WIZ.serviceGroup=' + JSON.stringify(g.group).replace(/"/g, '&quot;') + ';_cxWizRender()">' + esc(sv) + '</button>';
+        return '<div style="font-size:13px;font-weight:800;margin:14px 0 6px;padding:4px 10px;border-radius:6px;background:var(--spruce);color:#fff;display:inline-block">' + esc(g.group) + '</div>' +
+          '<div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(160px, 1fr));gap:6px">' + g.services.map(function (sv) {
+            return '<button class="btn btn-sm' + (W.service === sv ? ' btn-primary' : '') + '" style="width:100%" onclick="CASE_WIZ.service=' + JSON.stringify(sv).replace(/"/g, '&quot;') + ';CASE_WIZ.serviceGroup=' + JSON.stringify(g.group).replace(/"/g, '&quot;') + ';_cxWizRender()">' + esc(sv) + '</button>';
           }).join('') + '</div>';
       }).join('');
       if (W.service === 'Other')
@@ -725,7 +729,7 @@ function _cxWizRender() {
       var cl = D.clients.filter(function (c) { return c.id === W.clientId; })[0];
       var suggested = W.name || ((cl ? cl.name : (W.newClient.name || 'Client')) + ' \u2014 ' + (W.service === 'Other' ? W.customService || 'Other' : W.service));
       body = '<div class="form-group"><label class="form-label">Project Name</label><input id="wiz-name" class="form-input" value="' + esc(suggested) + '"></div>' +
-        '<div class="form-group"><label class="form-label">Description</label><input id="wiz-desc" class="form-input" value="' + esc(W.description) + '"></div>' +
+        '<div class="form-group"><label class="form-label">Description</label><textarea id="wiz-desc" class="form-textarea" rows="5" style="min-height:110px;width:100%;resize:vertical;line-height:1.5" placeholder="Full case background, context, notes… (supports long-form text)">' + esc(W.description) + '</textarea></div>' +
         '<div class="form-group"><label class="form-label">Priority</label><div style="display:flex;gap:6px">' +
         ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW'].map(function (pr) {
           var e2 = Schema.PRIORITY[pr] ? Schema.PRIORITY[pr].emoji + ' ' : '';
@@ -832,7 +836,7 @@ function _cxWizRender() {
         '<tr><td style="color:var(--t2);padding:3px 12px 3px 0">Owners</td><td>' + owners.length + ' selected</td></tr>' +
         '<tr><td style="color:var(--t2);padding:3px 12px 3px 0">Milestones</td><td>' + W.milestones.length + '</td></tr></table>' +
         '<div style="font-size:11px;color:var(--t2);margin-top:8px">On create: milestones get deadlines auto-spread up to the final deadline (where not set), dependencies chain "after previous", and every milestone gets a one-click Google Calendar event with <strong>[SIS] Client \u2014 Milestone</strong> naming.</div>';
-      foot = '<button class="btn" onclick="CASE_WIZ.step=5;_cxWizRender()">\u2190 Back</button><button class="btn btn-primary" onclick="cxWizCreate()">\uD83C\uDF41 Create Project</button>';
+      foot = '<button class="btn" onclick="CASE_WIZ.step=5;_cxWizRender()">\u2190 Back</button><button class="btn btn-primary" id="wiz-create-btn" onclick="cxWizCreate()">\uD83C\uDF41 Create Project</button>';
     }
 
     openModal(title, crumbs + body, foot);
@@ -894,7 +898,7 @@ function cxWizNext(from) {
       W.clientId = sel && sel.value ? Number(sel.value) : null;
       if (W.clientId == null) { W.clientMode = 'new'; _cxWizRender(); return; }
     } else {
-      ['name', 'email', 'phone', 'countryOfResidence', 'currentCountry', 'uci', 'internalRef'].forEach(function (f) {
+      ['name', 'email', 'phone', 'countryOfNationality', 'currentAddress', 'uci', 'driveLink', 'applicationNumber', 'rpdFileNumber'].forEach(function (f) {
         var el = document.getElementById('wiz-nc-' + f); if (el) W.newClient[f] = el.value;
       });
       if (!(W.newClient.name || '').trim()) { toast('Client name is required', 'error'); return; }
@@ -927,6 +931,10 @@ function cxWizNext(from) {
 
 function cxWizCreate() {
   var W = CASE_WIZ;
+  if (W._creating) return; /* prevent double-submit */
+  W._creating = true;
+  var btn = document.getElementById('wiz-create-btn');
+  if (btn) { btn.disabled = true; btn.innerHTML = '\u23F3 Creating\u2026'; }
   var clientP = W.clientMode === 'existing' && W.clientId != null
     ? DataAPI.getClients().then(function (cs) { return cs.filter(function (c) { return c.id === W.clientId; })[0]; })
     : DataAPI.createClient(W.newClient);
@@ -975,7 +983,14 @@ function cxWizCreate() {
     if (typeof syncState === 'function') syncState();
     toast('Project created \uD83C\uDF41 \u2014 ' + proj.name, 'success');
     cxOpenCase(proj.id);
-  }).catch(function (e) { toast(e.message || 'Create failed', 'error'); });
+  }).catch(function (e) {
+    toast(e.message || 'Create failed', 'error');
+    if (CASE_WIZ) {
+      CASE_WIZ._creating = false;
+      var b = document.getElementById('wiz-create-btn');
+      if (b) { b.disabled = false; b.innerHTML = '\uD83C\uDF41 Create Project'; }
+    }
+  });
 }
 
 
