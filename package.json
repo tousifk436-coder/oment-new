@@ -1,0 +1,15 @@
+{
+  "name": "oment-psa",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Oment CRM frontend \u2014 agency operations platform \u2014 admin + employee apps on a shared data layer",
+  "scripts": {
+    "start": "python3 -m http.server 8000",
+    "test": "node smoke.js && node crossapp.js",
+    "test:smoke": "node smoke.js",
+    "test:integration": "node crossapp.js"
+  },
+  "devDependencies": {
+    "jsdom": "^24.0.0"
+  }
+}

@@ -1,0 +1,4 @@
+/* ── PAGES CSS ── */
+
+/* Attendance stats 4-col override */
+.att-stats-4{grid-template-columns:repeat(4,1fr)}

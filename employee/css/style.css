@@ -1,0 +1,57 @@
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#F4F3EF;--sur:#fff;--s2:#F0EEE9;--s3:#E8E5DF;--s4:#DDD9D2;
+  --b:rgba(0,0,0,.07);--b2:rgba(0,0,0,.12);--b3:rgba(0,0,0,.18);
+  --t1:#18171A;--t2:#5C5A60;--t3:#9B9899;--t4:#C4C2C6;
+  --blue:#2563EB;--green:#059669;--amber:#D97706;--red:#DC2626;--purple:#7C3AED;
+  --bl:#EFF6FF;--gl:#ECFDF5;--al:#FFFBEB;--rl:#FEF2F2;--pl:#F5F3FF;
+  --blc:#1E40AF;--glc:#065F46;--alc:#92400E;--rlc:#991B1B;--plc:#5B21B6;
+  --r1:6px;--r2:8px;--r3:12px;--r4:16px;--r5:20px;
+  --sh0:0 1px 3px rgba(0,0,0,.06);
+  --sh1:0 2px 10px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.04);
+  --sh2:0 4px 20px rgba(0,0,0,.1),0 2px 5px rgba(0,0,0,.05);
+  --sh3:0 12px 44px rgba(0,0,0,.13),0 4px 12px rgba(0,0,0,.06);
+  --ease:.15s cubic-bezier(.4,0,.2,1);
+  --font:'Geist',system-ui,sans-serif;
+  --mono:'Geist Mono',monospace;
+  --sw:230px;
+}
+html,body{height:100%;overflow:hidden}
+body{font-family:var(--font);background:var(--bg);color:var(--t1);font-size:13.5px;line-height:1.5;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--b2);border-radius:4px}
+
+/* ── SCREENS ── */
+.scr{display:none;width:100%;height:100vh}
+.scr.on{display:flex}
+
+/* ── APP SHELL ── */
+#s-app{flex-direction:row;height:100vh;overflow:hidden}
+
+/* ── MAIN ── */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;height:100vh}
+
+.content{flex:1;overflow:hidden;position:relative;min-width:0}
+.view{display:none;position:absolute;inset:0;overflow-y:auto;padding:20px 22px 20px;scroll-behavior:smooth}
+.view.on{display:block}
+.view-np{padding:0!important}
+
+/* ── SECTION HEADER ── */
+.shd{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;gap:10px;flex-wrap:wrap}
+.stitle{font-size:17px;font-weight:700;letter-spacing:-.3px}
+.ssub{font-size:12.5px;color:var(--t3);margin-top:2px}
+
+/* ── STATS BAR ── */
+.sbar{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}
+.scard{background:var(--sur);border:1px solid var(--b);border-radius:var(--r3);padding:13px}
+.sl{font-size:10.5px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+.sv{font-size:22px;font-weight:800;font-family:var(--mono);letter-spacing:-.5px;margin-bottom:2px;line-height:1}
+.ss{font-size:11.5px;color:var(--t3)}
+
+/* ── CARD ── */
+.card{background:var(--sur);border:1px solid var(--b);border-radius:var(--r4);padding:16px}
+.card-sm{background:var(--sur);border:1px solid var(--b);border-radius:var(--r3);padding:13px}
+
+/* ── EMPTY STATE ── */
+.empty{text-align:center;padding:40px;color:var(--t3)}

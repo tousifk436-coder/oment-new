@@ -1,0 +1,116 @@
+/* ============================================================================
+   POLISH — employee app refinement layer (sabse aakhir mein load hoti hai)
+   ----------------------------------------------------------------------------
+   Admin app ke polish.css ka jodidaar. Wahi teen cheezein:
+   warm ink shadows, tabular numerals, aur emoji ki jagah ek proper icon
+   component. Employee app apne chhote token naam use karta hai (--sur, --b,
+   --r2 …) is liye ye file un par likhi gayi hai, admin wale par nahi.
+   ============================================================================ */
+
+:root {
+  /* Warm shadows — background warm off-white hai, neutral-black shadow
+     uspar dhundhli grey lagti thi */
+  --sh0: 0 1px 2px rgba(43,36,28,.05);
+  --sh1: 0 1px 2px rgba(43,36,28,.05), 0 4px 14px -4px rgba(43,36,28,.10);
+  --sh2: 0 2px 6px rgba(43,36,28,.06), 0 12px 32px -10px rgba(43,36,28,.16);
+  --sh3: 0 4px 12px rgba(43,36,28,.07), 0 24px 56px -14px rgba(43,36,28,.24);
+  --spruce: #0E6B4F;
+  --spruce-tint: #E9F3EE;
+  --ring: 0 0 0 3px rgba(14,107,79,.20);
+}
+
+body { text-rendering: optimizeLegibility; }
+
+/* Timer/counter har second repaint hote hain — proportional digits kaanpte the */
+.sv, .fc-timer, .tr-m, .load-count, .score-val, .stat-time,
+.mono, [class*="timer"] {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+}
+
+/* ── Icons ───────────────────────────────────────────────────────────────── */
+.icon { flex-shrink: 0; display: inline-block; vertical-align: -1.5px; }
+.icon-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--r2);
+  flex-shrink: 0;
+}
+.notif-ic .icon { vertical-align: 0; }
+
+/* Icon ke saath text — baseline theek karo */
+.fc-chip, .badge, .tr-m span, .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* ── Focus ───────────────────────────────────────────────────────────────── */
+:where(button, a, input, select, textarea, [tabindex]):focus-visible {
+  outline: none;
+  box-shadow: var(--ring);
+  border-radius: var(--r1);
+}
+
+/* ── Cards ───────────────────────────────────────────────────────────────── */
+.card, .scard, .fc {
+  border-color: rgba(43,36,28,.07);
+  transition: box-shadow .2s var(--ease), transform .2s var(--ease);
+}
+.scard { transition: transform .18s cubic-bezier(.4,0,.2,1), box-shadow .18s cubic-bezier(.4,0,.2,1); }
+.scard:hover { box-shadow: var(--sh1); }
+
+/* ── Empty states ────────────────────────────────────────────────────────── */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 34px 20px;
+  color: var(--t3);
+  font-size: 13px;
+}
+.empty .icon-badge { margin-bottom: 2px; }
+.empty-teach { padding: 32px 22px; }
+.empty-teach-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px; height: 46px;
+  margin: 0 auto 12px;
+  border-radius: 50%;
+  background: var(--s2);
+  color: var(--t3);
+}
+.empty-teach-title { font-size: 13.5px; font-weight: 650; color: var(--t1); }
+.empty-teach-body { font-size: 12.5px; color: var(--t3); line-height: 1.55; margin-top: 5px; }
+
+/* ── Chips ───────────────────────────────────────────────────────────────── */
+.fc-chip {
+  gap: 5px;
+  font-variant-numeric: tabular-nums;
+}
+.fc-chip .icon { opacity: .8; }
+
+/* ── Buttons ─────────────────────────────────────────────────────────────── */
+.btn { transition: background var(--ease), border-color var(--ease), transform .12s cubic-bezier(.4,0,.2,1); }
+.btn:active { transform: translateY(.5px); }
+
+/* ── Toast ───────────────────────────────────────────────────────────────── */
+.toast { box-shadow: var(--sh2); border-radius: var(--r2); }
+
+/* ── Login ───────────────────────────────────────────────────────────────── */
+.lcard { box-shadow: var(--sh2); }
+.lh { letter-spacing: -.02em; }
+
+/* ── Motion respect ──────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

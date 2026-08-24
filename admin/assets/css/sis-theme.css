@@ -1,0 +1,139 @@
+/* ============================================================================
+   SIS THEME — Stanstead identity layer over Oment tokens
+   ----------------------------------------------------------------------------
+   Ek disciplined refinement: deep spruce accent (Canadian evergreen — maple-red
+   cliché nahi), live status-strip hero as the signature, quiet card polish.
+   Base tokens (tokens.css) ke upar baithti hai — kuch override, kuch naya.
+   ============================================================================ */
+
+:root {
+  --spruce: #0E6B4F;
+  --spruce-deep: #0A523D;
+  --spruce-tint: #E9F3EE;
+  --spruce-line: #CDE4DA;
+  --ink: #17161B;
+}
+
+/* ── Accent: primary actions ab spruce hain ─────────────────────────────── */
+.btn-primary {
+  background: var(--spruce);
+  border-color: var(--spruce);
+}
+.btn-primary:hover { background: var(--spruce-deep); border-color: var(--spruce-deep); }
+
+.logo-mark, .sidebar .logo { background: var(--spruce) !important; }
+.nav-item.active { color: var(--spruce); }
+.nav-item.active svg { color: var(--spruce); }
+
+.nav-badge {
+  background: var(--red);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 5px;
+  border-radius: 9px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+}
+
+/* ── Signature: live status-strip hero (Cases / Operations) ─────────────── */
+.sis-hero {
+  background: linear-gradient(115deg, var(--ink) 0%, #23313B 55%, var(--spruce-deep) 100%);
+  color: #F4F7F5;
+  border-radius: var(--r12);
+  padding: 18px 20px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  box-shadow: var(--sh1);
+}
+.sis-hero-org {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #9DB8AC;
+  margin-bottom: 3px;
+}
+.sis-hero-title {
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+.sis-hero-date { font-size: 12px; color: #B9C6C0; margin-top: 3px; }
+.sis-hero-live {
+  display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
+  font-size: 12px; font-weight: 600;
+}
+.sis-live-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 999px;
+  padding: 5px 11px;
+  white-space: nowrap;
+}
+.sis-live-chip .dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: #34D399;
+  box-shadow: 0 0 0 3px rgba(52,211,153,0.18);
+}
+.sis-live-chip.warn .dot { background: #FBBF24; box-shadow: 0 0 0 3px rgba(251,191,36,0.18); }
+.sis-live-chip.alert .dot { background: #F87171; box-shadow: 0 0 0 3px rgba(248,113,113,0.2); animation: sisPulse 1.6s infinite; }
+@keyframes sisPulse { 50% { box-shadow: 0 0 0 6px rgba(248,113,113,0.05); } }
+@media (prefers-reduced-motion: reduce) { .sis-live-chip.alert .dot { animation: none; } }
+
+/* ── Stat tiles: quiet cards, tabular numerals, hover lift ──────────────── */
+.cx-tile {
+  border: 1px solid var(--b1);
+  transition: transform .15s var(--ease), box-shadow .15s var(--ease), border-color .15s var(--ease);
+  font-variant-numeric: tabular-nums;
+}
+.cx-tile[onclick]:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--sh2);
+  border-color: var(--spruce-line);
+}
+
+/* ── Status badges: dot + label ─────────────────────────────────────────── */
+.badge { border-radius: 999px; font-weight: 600; }
+.badge-green { background: var(--spruce-tint); color: var(--spruce-deep); }
+
+/* ── Tables: airy rows, spruce hover wash ───────────────────────────────── */
+.data-table td { padding-top: 11px; padding-bottom: 11px; }
+.data-table tr:hover td { background: var(--spruce-tint); }
+
+/* ── Progress bars ──────────────────────────────────────────────────────── */
+.card [style*="height:6px"] > div,
+.card [style*="height:8px"] > div { transition: width .5s var(--ease); }
+
+/* ── Empty states: invitation to act ────────────────────────────────────── */
+.sis-empty {
+  text-align: center;
+  padding: 44px 20px;
+  border: 1.5px dashed var(--s4);
+  border-radius: var(--r12);
+  background: var(--surface);
+}
+.sis-empty .glyph { font-size: 34px; margin-bottom: 8px; }
+.sis-empty .lead { font-weight: 700; font-size: 15px; margin-bottom: 4px; }
+.sis-empty .hint { font-size: 12.5px; color: var(--t2); margin-bottom: 14px; }
+
+/* ── Cards: consistent breathing room ───────────────────────────────────── */
+.card { border: 1px solid var(--b1); }
+.section-title { letter-spacing: -0.01em; }
+
+/* ── Modal polish (wizard) ──────────────────────────────────────────────── */
+#modal-overlay .modal-box { border-radius: var(--r16); }
+.form-input:focus, .form-select:focus {
+  border-color: var(--spruce);
+  box-shadow: 0 0 0 3px rgba(14,107,79,0.12);
+  outline: none;
+}

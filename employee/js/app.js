@@ -1,0 +1,18 @@
+// OMENT EMPLOYEE APP - API AUTH BOOT
+function _employeeLoginScreen(){
+  var list=document.getElementById('elist');if(!list)return;
+  list.innerHTML='<form id="employee-api-login" style="padding:18px;text-align:left">'+
+    '<div style="font-size:18px;font-weight:800;margin-bottom:5px">Sign in to Oment</div><div style="font-size:12px;color:var(--t3);margin-bottom:18px">Use your company account.</div>'+
+    '<label style="display:block;font-size:11px;font-weight:700;margin-bottom:6px">EMAIL</label><input id="emp-email" type="email" autocomplete="username" required style="width:100%;padding:11px;border:1px solid var(--border);border-radius:9px;margin-bottom:12px">'+
+    '<label style="display:block;font-size:11px;font-weight:700;margin-bottom:6px">PASSWORD</label><input id="emp-password" type="password" autocomplete="current-password" required style="width:100%;padding:11px;border:1px solid var(--border);border-radius:9px;margin-bottom:12px">'+
+    '<div id="emp-login-error" style="display:none;color:#b91c1c;font-size:12px;margin-bottom:10px"></div><button class="btn btn-purple" type="submit" style="width:100%">Sign in</button></form>';
+  document.getElementById('employee-api-login').addEventListener('submit',function(e){e.preventDefault();var b=e.target.querySelector('button'),er=document.getElementById('emp-login-error');b.disabled=true;b.textContent='Signing in…';er.style.display='none';DataAPI.login(document.getElementById('emp-email').value.trim(),document.getElementById('emp-password').value).then(function(){syncUsers();var me=DataAPI.currentUser();CU=USERS.find(function(u){return String(u.id)===String(me.id);})||USERS.find(function(u){return String(u.email).toLowerCase()===String(me.email).toLowerCase();});if(!CU)throw new Error('This account is not enabled for the employee portal');return DataAPI.ensureTodayAttendance(CU.id);}).then(function(){syncUserState();document.getElementById('s-login').classList.remove('on');document.getElementById('s-app').classList.add('on');applyUser();clearInterval(wiv);wiv=setInterval(tickAtt,1000);rAll();toast('Welcome back, '+esc(CU.name.split(' ')[0])+'!','ok');}).catch(function(x){CU=null;er.textContent=x.message||'Unable to sign in';er.style.display='block';b.disabled=false;b.textContent='Sign in';});});
+}
+function bootEmployeeApp(){
+  var list=document.getElementById('elist');if(list)list.innerHTML='<div style="text-align:center;padding:26px;color:var(--t3);font-size:13px">Connecting…</div>';
+  if(!DataAPI.isAuthenticated()){_employeeLoginScreen();return;}
+  DataAPI.init().then(function(){if(typeof HRM!=='undefined')HRM.init();syncUsers();var me=DataAPI.currentUser();CU=USERS.find(function(u){return String(u.id)===String(me.id);});if(!CU)throw new Error('Your account is not enabled for the employee portal');return DataAPI.ensureTodayAttendance(CU.id);}).then(function(){syncUserState();document.getElementById('s-login').classList.remove('on');document.getElementById('s-app').classList.add('on');applyUser();clearInterval(wiv);wiv=setInterval(tickAtt,1000);rAll();}).catch(function(err){console.error('Boot failed:',err);if(err.code==='AUTH_REQUIRED'||err.status===401){DataAPI.logout();_employeeLoginScreen();}else if(list){list.innerHTML='<div style="text-align:center;padding:26px;color:#b91c1c">'+esc(err.message||'Workspace failed to load')+'<br><button class="btn btn-sm" style="margin-top:12px" onclick="location.reload()">Try again</button></div>';}});
+}
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){cDlg();cMod();closeSb();}});
+window.addEventListener('DOMContentLoaded',bootEmployeeApp);
+window.addEventListener('storage',function(e){if(e.key==='oment_access_token')location.reload();});
